@@ -18,12 +18,18 @@ def get_conf_from_evn():
     """
     conf = dict()
     try:
-        # HDFS
-        conf["HDFS_HOST"] = os.getenv("HDFS_HOST")
-        conf["HDFS_PORT"] = os.getenv("HDFS_PORT")
+        # Metadata
+        conf["METADATA_HOST"] = os.getenv("METADATA_HOST")
+        conf["METADATA_HOST"] = os.getenv("METADATA_PORT")
+        conf["METADATA_TYPE"] = os.getenv("METADATA_TYPE", default="sensor")
+        conf["METADATA_BACKEND"] = os.getenv("METADATA_BACKEND", default="MongoDB")
+        # Data source
+        conf["SOURCE_HOST"] = os.getenv("SOURCE_HOST")
+        conf["SOURCE_PORT"] = os.getenv("SOURCE_PORT")
+        conf["SOURCE_BACKEND"] = os.getenv("SOURCE_BACKEND", default="HDFS")
+        # Raw data period
         start_datetime = os.getenv("APP_TIME_START")  # yyyy-MM-dd'T'HH:mm:ss
         end_datetime = os.getenv("APP_TIME_END")  #  yyyy-MM-dd'T'HH:mm:ss
-        # Raw data period
         conf["start"] = pendulum.parse(start_datetime)
         conf["end"] = pendulum.parse(end_datetime)
     except Exception as e:
