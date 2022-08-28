@@ -19,3 +19,6 @@ class FeatureCluster(metaclass=ABCMeta):
     @abstractmethod
     def get_cluster_id(self) -> int:
         pass
+
+    def get_features(self) -> List[Feature]:
+        return self.features
