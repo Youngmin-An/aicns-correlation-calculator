@@ -29,6 +29,7 @@ def get_conf_from_evn():
         # Data source
         conf["SOURCE_HOST"] = os.getenv("SOURCE_HOST")
         conf["SOURCE_PORT"] = os.getenv("SOURCE_PORT")
+        conf["SOURCE_DATA_PATH_PREFIX"] = os.getenv("SOURCE_DATA_PATH_PREFIX", default="")
         conf["SOURCE_BACKEND"] = os.getenv("SOURCE_BACKEND", default="HDFS")
         # Raw data period
         start_datetime = os.getenv("APP_TIME_START")  # yyyy-MM-dd'T'HH:mm:ss
@@ -45,7 +46,7 @@ app_conf = get_conf_from_evn()
 
 # Spark session
 spark_conf = SparkConf().setAppName(
-    f"aicns-correlation-calculator-{uuid.uuid4}"
+    f"aicns-correlation-calculator-{uuid.uuid4()}"
 )  # todo experiment parameter-based app name
 spark = SparkContext(conf=spark_conf)
 sql_context = SQLContext(spark)
@@ -62,7 +63,7 @@ loader.prepare_to_load(**app_conf)
 data = dict()
 for position in positions:
     data[str(position.pos_id)] = loader.load_data_in_a_cluster(start=app_conf["start"], end=app_conf["end"], cluster=position)
-
+logger.info(f"loaded data: {data}")
 
 # Tier-down Spark
 spark.stop()
